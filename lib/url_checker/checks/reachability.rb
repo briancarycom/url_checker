@@ -16,8 +16,16 @@ module UrlChecker
         end
 
         def perform_request(url)
-          easy.http_request url, :head, failonerror: true, followlocation: true, maxredirs: 5
+          if s3_url?(url)
+            easy.http_request url, :get, failonerror: true, followlocation: true, maxredirs: 5, range: '0-1'
+          else
+            easy.http_request url, :head, failonerror: true, followlocation: true, maxredirs: 5
+          end
           easy.perform
+        end
+
+        def s3_url?(url)
+          !!(URI.parse(url).host =~ /s3\.amazonaws\.com$/)
         end
       end
     end
