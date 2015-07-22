@@ -11,11 +11,8 @@ module UrlChecker
 
         protected
 
-        def easy
-          @easy ||= Ethon::Easy.new
-        end
-
         def perform_request(url)
+          easy = Ethon::Easy.new
           if s3_url?(url)
             easy.http_request url, :get, failonerror: true, followlocation: true, maxredirs: 5, range: '0-1'
           else
